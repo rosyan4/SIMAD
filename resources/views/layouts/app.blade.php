@@ -10,6 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
     <!-- DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
     <!-- Select2 -->
@@ -42,14 +44,14 @@
             --gray-100: #f1f5f9;
             --gray-50: #f8fafc;
             --white: #ffffff;
-            --border-radius: 12px;
-            --border-radius-sm: 8px;
             --navbar-height: 70px;
             --sidebar-width: 280px;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.12);
         }
         
         * {
@@ -59,12 +61,12 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             background-color: var(--gray-50);
             color: var(--gray-900);
             line-height: 1.6;
-            padding-top: var(--navbar-height);
             font-size: 15px;
+            overflow-x: hidden;
         }
         
         /* ========================================
@@ -86,10 +88,13 @@
         .navbar .container-fluid {
             padding: 0 1.5rem;
             height: 100%;
+            display: flex;
+            align-items: center;
         }
         
         .navbar-brand {
-            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
             font-size: 1.5rem;
             color: var(--primary-color) !important;
             display: flex;
@@ -97,6 +102,7 @@
             gap: 0.75rem;
             padding: 0;
             margin: 0;
+            letter-spacing: -0.5px;
         }
         
         .navbar-brand i {
@@ -104,19 +110,62 @@
             font-size: 1.75rem;
         }
         
-        .navbar-brand span {
-            letter-spacing: -0.5px;
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin-right: 0.5rem;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-menu-toggle:hover {
+            background-color: var(--gray-100);
+        }
+        
+        /* Desktop Sidebar Toggle */
+        .sidebar-toggle-btn {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--border-radius-sm);
+            padding: 0.5rem 0.75rem;
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+        }
+        
+        .sidebar-toggle-btn:hover {
+            background-color: var(--gray-100);
+            color: var(--primary-color);
+            border-color: var(--gray-300);
+        }
+        
+        .sidebar-toggle-btn i {
+            font-size: 1.1rem;
         }
         
         .navbar .nav-link {
             color: var(--gray-700) !important;
-            font-weight: 500;
+            font-weight: 600;
             padding: 0.625rem 1rem;
             border-radius: var(--border-radius-sm);
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.95rem;
+            height: 42px;
         }
         
         .navbar .nav-link:hover {
@@ -134,11 +183,16 @@
         }
         
         .navbar .dropdown-item {
-            padding: 0.625rem 1rem;
+            padding: 0.65rem 1rem;
             border-radius: var(--border-radius-sm);
             color: var(--gray-700);
-            font-weight: 500;
-            transition: all 0.15s ease;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
         }
         
         .navbar .dropdown-item:hover {
@@ -155,31 +209,15 @@
             font-weight: 600;
             padding: 0.35em 0.65em;
             font-size: 0.75rem;
+            border-radius: 6px;
         }
         
-        /* Sidebar Toggle Button */
-        .sidebar-toggle-btn {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--border-radius-sm);
-            padding: 0.5rem 0.75rem;
-            color: var(--gray-700);
-            cursor: pointer;
-            transition: all 0.15s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        
-        .sidebar-toggle-btn:hover {
-            background-color: var(--gray-100);
-            color: var(--primary-color);
-        }
-        
-        .sidebar-toggle-btn i {
-            font-size: 1.1rem;
+        /* ========================================
+           LAYOUT CONTAINER
+        ======================================== */
+        .layout-container {
+            padding-top: var(--navbar-height);
+            min-height: 100vh;
         }
         
         /* ========================================
@@ -198,7 +236,7 @@
             overflow-x: hidden;
             z-index: 1020;
             width: var(--sidebar-width);
-            border-right: 1px solid var(--gray-200);
+            border-right: 2px solid var(--gray-200);
             transition: all 0.3s ease;
         }
         
@@ -241,12 +279,12 @@
         }
         
         .sidebar::-webkit-scrollbar-thumb {
-            background: var(--gray-300);
+            background: var(--primary-color);
             border-radius: 3px;
         }
         
         .sidebar::-webkit-scrollbar-thumb:hover {
-            background: var(--gray-400);
+            background: var(--primary-dark);
         }
         
         .sidebar .nav-link {
@@ -254,11 +292,12 @@
             padding: 0.875rem 1.25rem;
             margin: 0.25rem 1rem;
             border-radius: var(--border-radius-sm);
-            transition: all 0.15s ease;
-            font-weight: 500;
+            transition: all 0.2s ease;
+            font-weight: 600;
             display: flex;
             align-items: center;
             font-size: 0.95rem;
+            text-decoration: none;
         }
         
         .sidebar .nav-link:hover {
@@ -293,6 +332,10 @@
             color: var(--white);
         }
         
+        .sidebar .nav-link.active:hover i {
+            color: var(--white);
+        }
+        
         .sidebar-section {
             padding: 1.25rem 1rem;
             margin: 1rem 0;
@@ -306,6 +349,9 @@
             letter-spacing: 0.05em;
             margin-bottom: 1rem;
             padding: 0 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .opd-info {
@@ -319,11 +365,13 @@
             margin-bottom: 0.25rem;
             font-size: 0.95rem;
             color: var(--gray-900);
+            font-weight: 600;
         }
         
         .opd-info small {
             color: var(--gray-500);
             font-size: 0.8rem;
+            font-weight: 500;
         }
         
         .stats-widget {
@@ -348,7 +396,7 @@
         .stats-widget .stat-label {
             color: var(--gray-600);
             font-size: 0.85rem;
-            font-weight: 500;
+            font-weight: 600;
         }
         
         .stats-widget .stat-value {
@@ -357,24 +405,73 @@
             font-size: 0.9rem;
         }
         
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1015;
+        }
+        
+        .sidebar-overlay.show {
+            display: block;
+        }
+        
+        /* ========================================
+           MAIN CONTENT
+        ======================================== */
+        main {
+            padding: 2rem 1.5rem;
+            margin-left: var(--sidebar-width);
+            min-height: calc(100vh - var(--navbar-height));
+            transition: margin-left 0.3s ease;
+        }
+        
+        main.expanded {
+            margin-left: 70px;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-header p {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+        
         /* ========================================
            CARD STYLING
         ======================================== */
         .card {
             border-radius: var(--border-radius);
-            border: 1px solid var(--gray-200);
+            border: 2px solid var(--gray-200);
             box-shadow: var(--shadow-sm);
             margin-bottom: 1.5rem;
             background: var(--white);
+            overflow: hidden;
         }
         
         .card-header {
-            background-color: var(--white);
-            border-bottom: 1px solid var(--gray-200);
-            font-weight: 600;
+            background-color: var(--gray-50);
+            border-bottom: 2px solid var(--gray-200);
+            font-weight: 700;
             padding: 1.25rem 1.5rem;
             font-size: 1.125rem;
             color: var(--gray-900);
+            font-family: 'Outfit', sans-serif;
         }
         
         .card-body {
@@ -386,14 +483,15 @@
         ======================================== */
         .btn {
             border-radius: var(--border-radius-sm);
-            padding: 0.625rem 1.25rem;
+            padding: 0.65rem 1.25rem;
             font-weight: 600;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
             border: none;
             font-size: 0.9rem;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            min-height: 42px;
         }
         
         .btn-primary {
@@ -404,6 +502,8 @@
         .btn-primary:hover {
             background-color: var(--primary-dark);
             color: var(--white);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
         }
         
         .btn-secondary {
@@ -414,6 +514,7 @@
         .btn-secondary:hover {
             background-color: #0284c7;
             color: var(--white);
+            transform: translateY(-1px);
         }
         
         .btn-success {
@@ -424,6 +525,7 @@
         .btn-success:hover {
             background-color: #059669;
             color: var(--white);
+            transform: translateY(-1px);
         }
         
         .btn-warning {
@@ -434,6 +536,7 @@
         .btn-warning:hover {
             background-color: #d97706;
             color: var(--white);
+            transform: translateY(-1px);
         }
         
         .btn-danger {
@@ -444,6 +547,7 @@
         .btn-danger:hover {
             background-color: #dc2626;
             color: var(--white);
+            transform: translateY(-1px);
         }
         
         .btn-outline-primary {
@@ -455,6 +559,13 @@
         .btn-outline-primary:hover {
             background-color: var(--primary-color);
             color: var(--white);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-sm {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.85rem;
+            min-height: 36px;
         }
         
         /* ========================================
@@ -530,23 +641,39 @@
             color: #991b1b; 
         }
         
+        .badge {
+            border-radius: 6px;
+            padding: 0.35em 0.65em;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
         /* ========================================
            TABLE STYLING
         ======================================== */
+        .table-responsive {
+            border-radius: var(--border-radius);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
         .table {
             margin-bottom: 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 2px solid var(--gray-200);
         }
         
         .table th {
-            background-color: var(--gray-50);
-            border-top: none;
-            border-bottom: 2px solid var(--gray-200);
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             letter-spacing: 0.05em;
-            color: var(--gray-700);
             padding: 1rem;
+            font-family: 'Outfit', sans-serif;
         }
         
         .table td {
@@ -554,44 +681,117 @@
             vertical-align: middle;
             color: var(--gray-700);
             border-bottom: 1px solid var(--gray-200);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .table tbody tr {
+            background-color: var(--white);
         }
         
         .table tbody tr:hover {
             background-color: var(--gray-50);
         }
         
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: var(--gray-50);
+        }
+        
         /* ========================================
-           TAB STYLING
+           FORM CONTROLS
         ======================================== */
-        .nav-tabs {
-            border-bottom: 2px solid var(--gray-200);
-            margin-bottom: 0;
+        .form-control, .form-select {
+            border: 2px solid var(--gray-300);
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1rem;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background-color: var(--white);
+            min-height: 44px;
         }
         
-        .nav-tabs .nav-link {
-            border: none;
-            color: var(--gray-600);
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background-color: var(--white);
+        }
+        
+        .form-label {
             font-weight: 600;
-            padding: 1rem 1.5rem;
-            border-bottom: 3px solid transparent;
-            transition: all 0.15s ease;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
         }
         
-        .nav-tabs .nav-link:hover {
-            color: var(--primary-color);
-            border-bottom-color: var(--gray-300);
+        /* ========================================
+           ALERT STYLING
+        ======================================== */
+        .alert {
+            border-radius: var(--border-radius);
+            border: 2px solid;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
         }
         
-        .nav-tabs .nav-link.active {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
-            background: transparent;
+        .alert i {
+            font-size: 1.2rem;
+            margin-right: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            min-width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .tab-content {
-            background: var(--white);
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-            padding: 1.5rem;
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-color: var(--success-color);
+        }
+        
+        .alert-success i {
+            background-color: var(--success-color);
+            color: var(--white);
+        }
+        
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-color: var(--danger-color);
+        }
+        
+        .alert-danger i {
+            background-color: var(--danger-color);
+            color: var(--white);
+        }
+        
+        .alert-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+            border-color: var(--warning-color);
+        }
+        
+        .alert-warning i {
+            background-color: var(--warning-color);
+            color: var(--white);
+        }
+        
+        .alert-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border-color: var(--info-color);
+        }
+        
+        .alert-info i {
+            background-color: var(--info-color);
+            color: var(--white);
         }
         
         /* ========================================
@@ -602,14 +802,15 @@
             padding: 2rem 1.5rem;
             border-radius: var(--border-radius);
             margin-bottom: 1.5rem;
-            border: 1px solid var(--gray-200);
+            border: 2px solid var(--gray-200);
             background: var(--white);
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
         }
         
         .stat-card:hover {
             box-shadow: var(--shadow-md);
             border-color: var(--gray-300);
+            transform: translateY(-2px);
         }
         
         .stat-card i {
@@ -637,100 +838,13 @@
             font-weight: 700;
             margin: 0.5rem 0;
             color: var(--gray-900);
+            font-family: 'Outfit', sans-serif;
         }
         
         .stat-card .stat-label {
             color: var(--gray-600);
             font-size: 0.95em;
             font-weight: 600;
-        }
-        
-        /* ========================================
-           CONTENT AREA
-        ======================================== */
-        main {
-            padding: 2rem 1.5rem;
-            margin-left: var(--sidebar-width);
-            min-height: calc(100vh - var(--navbar-height));
-            transition: margin-left 0.3s ease;
-        }
-        
-        main.expanded {
-            margin-left: 70px;
-        }
-        
-        .page-header {
-            margin-bottom: 2rem;
-        }
-        
-        .page-header h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-        }
-        
-        .page-header p {
-            color: var(--gray-600);
-            font-size: 1rem;
-        }
-        
-        /* ========================================
-           FORM CONTROLS
-        ======================================== */
-        .form-control, .form-select {
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-sm);
-            padding: 0.625rem 0.875rem;
-            transition: all 0.15s ease;
-            font-size: 0.95rem;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-        
-        .form-label {
-            font-weight: 600;
-            color: var(--gray-700);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-        
-        /* ========================================
-           ALERT STYLING
-        ======================================== */
-        .alert {
-            border-radius: var(--border-radius);
-            border: none;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid;
-        }
-        
-        .alert-success {
-            background-color: #d1fae5;
-            color: #065f46;
-            border-left-color: var(--success-color);
-        }
-        
-        .alert-danger {
-            background-color: #fee2e2;
-            color: #991b1b;
-            border-left-color: var(--danger-color);
-        }
-        
-        .alert-warning {
-            background-color: #fef3c7;
-            color: #92400e;
-            border-left-color: var(--warning-color);
-        }
-        
-        .alert-info {
-            background-color: #dbeafe;
-            color: #1e40af;
-            border-left-color: var(--info-color);
         }
         
         /* ========================================
@@ -752,7 +866,7 @@
             border-radius: var(--border-radius-sm);
             color: var(--gray-700);
             text-decoration: none;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
             font-weight: 600;
             font-size: 0.95rem;
         }
@@ -762,6 +876,8 @@
             border-color: var(--primary-color);
             color: var(--white);
             text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
         }
         
         .quick-action-btn i {
@@ -770,87 +886,68 @@
         }
         
         /* ========================================
-           ASSET GRID
+           TAB STYLING
         ======================================== */
-        .asset-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
+        .nav-tabs {
+            border-bottom: 2px solid var(--gray-200);
+            margin-bottom: 0;
         }
         
-        .asset-card {
-            border: 1px solid var(--gray-200);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            transition: all 0.15s ease;
-            background: var(--white);
-        }
-        
-        .asset-card:hover {
-            box-shadow: var(--shadow-md);
-            border-color: var(--gray-300);
-        }
-        
-        .asset-card-header {
-            background-color: var(--gray-50);
-            padding: 1.25rem;
-            border-bottom: 1px solid var(--gray-200);
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--gray-600);
             font-weight: 600;
+            padding: 1rem 1.5rem;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
         }
         
-        .asset-card-body {
-            padding: 1.25rem;
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-color);
+            border-bottom-color: var(--gray-300);
         }
         
-        /* ========================================
-           TIMELINE STYLING
-        ======================================== */
-        .timeline {
-            position: relative;
-            padding-left: 30px;
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            background: transparent;
         }
         
-        .timeline-item {
-            position: relative;
-            padding-bottom: 1.5rem;
-        }
-        
-        .timeline-marker {
-            position: absolute;
-            left: -30px;
-            top: 0;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            border: 3px solid var(--white);
-            box-shadow: 0 0 0 2px var(--primary-color);
-        }
-        
-        .timeline-content {
-            border-left: 2px solid var(--gray-200);
-            padding-left: 20px;
-            padding-bottom: 20px;
-        }
-        
-        .timeline-item:last-child .timeline-content {
-            border-left: none;
-        }
-        
-        /* ========================================
-           ACTION BUTTONS
-        ======================================== */
-        .action-buttons .btn {
-            margin-right: 0.25rem;
-            margin-bottom: 0.25rem;
+        .tab-content {
+            background: var(--white);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            padding: 1.5rem;
         }
         
         /* ========================================
            RESPONSIVE
         ======================================== */
+        /* ========================================
+           RESPONSIVE
+        ======================================== */
         @media (max-width: 768px) {
             body {
-                padding-top: var(--navbar-height);
+                font-size: 14px;
+            }
+            
+            .navbar .container-fluid {
+                padding: 0 0.75rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+            
+            .navbar-brand i {
+                font-size: 1.3rem;
+            }
+            
+            .mobile-menu-toggle {
+                display: inline-block;
+            }
+            
+            .sidebar-toggle-btn {
+                display: none !important;
             }
             
             .sidebar {
@@ -871,7 +968,7 @@
             
             main {
                 margin-left: 0;
-                padding: 1rem;
+                padding: 1rem 0.75rem;
             }
             
             main.expanded {
@@ -886,75 +983,82 @@
                 font-size: 1.75em;
             }
             
-            .sidebar-overlay {
-                display: none;
-                position: fixed;
-                top: var(--navbar-height);
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: rgba(0, 0, 0, 0.5);
-                z-index: 1035;
-            }
-            
-            .sidebar-overlay.show {
-                display: block;
-            }
-            
-            .mobile-menu-toggle {
-                display: inline-block !important;
-                padding: 0.5rem;
-                margin-right: 0.5rem;
-                border: none;
-                background: transparent;
-                color: var(--primary-color);
+            .page-header h1 {
                 font-size: 1.5rem;
-                cursor: pointer;
             }
             
-            .sidebar-toggle-btn {
-                display: none !important;
+            .card-header {
+                padding: 0.85rem 1rem;
+                font-size: 0.95rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+            
+            .btn-sm {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.8rem;
+            }
+            
+            .table thead th,
+            .table tbody td {
+                padding: 0.75rem 0.75rem;
+                font-size: 0.85rem;
+            }
+            
+            .alert {
+                padding: 0.85rem;
+                font-size: 0.85rem;
+            }
+            
+            .alert i {
+                font-size: 1.1rem;
+                min-width: 32px;
+                height: 32px;
             }
         }
         
-        .mobile-menu-toggle {
-            display: none;
+        @media (max-width: 576px) {
+            .navbar .container-fluid {
+                padding: 0 0.5rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            
+            .navbar-brand span {
+                max-width: 120px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            
+            .page-header h1 {
+                font-size: 1.35rem;
+            }
+            
+            .card-header {
+                font-size: 0.9rem;
+            }
+            
+            .table thead th,
+            .table tbody td {
+                padding: 0.6rem 0.5rem;
+                font-size: 0.8rem;
+            }
         }
         
-        @media (min-width: 769px) and (max-width: 991px) {
-            .sidebar {
-                width: 260px;
-            }
-            
-            .sidebar.collapsed {
-                width: 70px;
-            }
-            
-            main {
-                margin-left: 260px;
-            }
-            
-            main.expanded {
-                margin-left: 70px;
-            }
-        }
-        
-        @media (min-width: 992px) {
-            .sidebar {
-                width: var(--sidebar-width);
-            }
-            
-            .sidebar.collapsed {
-                width: 70px;
-            }
-            
-            main {
-                margin-left: var(--sidebar-width);
-            }
-            
-            main.expanded {
-                margin-left: 70px;
-            }
+        /* Selection */
+        ::selection {
+            background: rgba(37, 99, 235, 0.2);
+            color: var(--text-primary);
         }
     </style>
 </head>
@@ -985,7 +1089,7 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user"></i>
+                            <i class="fas fa-user-circle"></i>
                             <span>{{ Auth::user()->name }}</span>
                             <span class="badge bg-primary">Admin OPD</span>
                         </a>
@@ -1014,119 +1118,117 @@
     <!-- Sidebar Overlay for Mobile -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Main Content -->
-    <div class="container-fluid main-container">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="sidebar" id="sidebar">
-                <div class="pt-3">
-                    <!-- OPD Info -->
-                    <div class="sidebar-section">
-                        <h6><i class="fas fa-building"></i> Informasi OPD</h6>
-                        <div class="opd-info">
-                            <p class="fw-bold mb-1">{{ Auth::user()->opdUnit->nama_opd ?? 'OPD Tidak Diketahui' }}</p>
-                            <small>{{ Auth::user()->opdUnit->kode_opd ?? '' }}</small>
-                        </div>
+    <!-- Layout Container -->
+    <div class="layout-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="pt-3">
+                <!-- OPD Info -->
+                <div class="sidebar-section">
+                    <h6><i class="fas fa-building"></i> Informasi OPD</h6>
+                    <div class="opd-info">
+                        <p class="mb-1">{{ Auth::user()->opdUnit->nama_opd ?? 'OPD Tidak Diketahui' }}</p>
+                        <small>{{ Auth::user()->opdUnit->kode_opd ?? '' }}</small>
                     </div>
+                </div>
+                
+                <!-- Navigation Menu -->
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('opd.dashboard') ? 'active' : '' }}" href="{{ route('opd.dashboard.index') }}">
+                            <i class="fas fa-tachometer-alt"></i> 
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
                     
-                    <!-- Navigation Menu -->
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('opd.dashboard') ? 'active' : '' }}" href="{{ route('opd.dashboard.index') }}">
-                                <i class="fas fa-tachometer-alt"></i> 
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('opd.assets.*') ? 'active' : '' }}" href="{{ route('opd.assets.index') }}">
-                                <i class="fas fa-boxes"></i> 
-                                <span>Aset</span>
-                            </a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('opd.transactions.*') ? 'active' : '' }}" href="{{ route('opd.transactions.index') }}">
-                                <i class="fas fa-exchange-alt"></i> 
-                                <span>Transaksi</span>
-                            </a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('opd.master.*') ? 'active' : '' }}" href="{{ route('opd.master.index') }}">
-                                <i class="fas fa-database"></i> 
-                                <span>Data Master</span>
-                            </a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('opd.profile') ? 'active' : '' }}" href="{{ route('opd.profile.index') }}">
-                                <i class="fas fa-user"></i> 
-                                <span>Profil</span>
-                            </a>
-                        </li>
-                    </ul>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('opd.assets.*') ? 'active' : '' }}" href="{{ route('opd.assets.index') }}">
+                            <i class="fas fa-boxes"></i> 
+                            <span>Aset</span>
+                        </a>
+                    </li>
                     
-                    <!-- Quick Stats -->
-                    <div class="sidebar-section">
-                        <h6><i class="fas fa-chart-pie"></i> Ringkasan</h6>
-                        <div class="stats-widget">
-                            <div class="stat-row">
-                                <span class="stat-label">Total Aset</span>
-                                <span class="stat-value" id="sidebar-asset-count">-</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">Aktif</span>
-                                <span class="stat-value" id="sidebar-active-count">-</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-label">Nilai Total</span>
-                                <span class="stat-value" id="sidebar-total-value">-</span>
-                            </div>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('opd.transactions.*') ? 'active' : '' }}" href="{{ route('opd.transactions.index') }}">
+                            <i class="fas fa-exchange-alt"></i> 
+                            <span>Transaksi</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('opd.master.*') ? 'active' : '' }}" href="{{ route('opd.master.index') }}">
+                            <i class="fas fa-database"></i> 
+                            <span>Data Master</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('opd.profile') ? 'active' : '' }}" href="{{ route('opd.profile.index') }}">
+                            <i class="fas fa-user"></i> 
+                            <span>Profil</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Quick Stats -->
+                <div class="sidebar-section">
+                    <h6><i class="fas fa-chart-pie"></i> Ringkasan</h6>
+                    <div class="stats-widget">
+                        <div class="stat-row">
+                            <span class="stat-label">Total Aset</span>
+                            <span class="stat-value" id="sidebar-asset-count">-</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Aktif</span>
+                            <span class="stat-value" id="sidebar-active-count">-</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Nilai Total</span>
+                            <span class="stat-value" id="sidebar-total-value">-</span>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Content Area -->
-            <main>
-                <!-- Flash Messages -->
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                
-                @if(session('warning'))
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        {{ session('warning') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                
-                @if(session('info'))
-                    <div class="alert alert-info alert-dismissible fade show" role="alert">
-                        <i class="fas fa-info-circle me-2"></i>
-                        {{ session('info') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                
-                <!-- Page Content -->
-                @yield('content')
-            </main>
         </div>
+
+        <!-- Content Area -->
+        <main>
+            <!-- Flash Messages -->
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i>
+                    <span>{{ session('success') }}</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{ session('error') }}</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            
+            @if(session('warning'))
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>{{ session('warning') }}</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            
+            @if(session('info'))
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="fas fa-info-circle"></i>
+                    <span>{{ session('info') }}</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            
+            <!-- Page Content -->
+            @yield('content')
+        </main>
     </div>
 
     <!-- Scripts -->
@@ -1193,12 +1295,14 @@
             $('#sidebarToggle').on('click', function() {
                 $('#sidebar').toggleClass('show');
                 $('#sidebarOverlay').toggleClass('show');
+                document.body.style.overflow = $('#sidebar').hasClass('show') ? 'hidden' : '';
             });
             
             // Close sidebar when clicking overlay
             $('#sidebarOverlay').on('click', function() {
                 $('#sidebar').removeClass('show');
                 $('#sidebarOverlay').removeClass('show');
+                document.body.style.overflow = '';
             });
             
             // Close sidebar when clicking a link on mobile
@@ -1206,6 +1310,16 @@
                 if ($(window).width() < 769) {
                     $('#sidebar').removeClass('show');
                     $('#sidebarOverlay').removeClass('show');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Handle window resize
+            $(window).on('resize', function() {
+                if ($(window).width() >= 769) {
+                    $('#sidebar').removeClass('show');
+                    $('#sidebarOverlay').removeClass('show');
+                    document.body.style.overflow = '';
                 }
             });
             
@@ -1226,6 +1340,9 @@
                         $('#sidebar-active-count').text(response.stats.active_assets.toLocaleString('id-ID'));
                         $('#sidebar-total-value').text(formatCurrency(response.stats.total_value));
                     }
+                },
+                error: function() {
+                    // Handle error silently
                 }
             });
         }
