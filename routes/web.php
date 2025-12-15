@@ -37,9 +37,9 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('profile')->name('profile.')->group(function () {
             Route::get('/', [OPDProfileController::class, 'index'])->name('index');
             Route::put('/', [OPDProfileController::class, 'update'])->name('update');
-            Route::post('/change-password', [OPDProfileController::class, 'changePassword'])->name('changePassword');
-            Route::put('/opd-profile', [OPDProfileController::class, 'updateOpdProfile'])->name('updateOpd');
-            Route::put('/notifications', [OPDProfileController::class, 'updateNotifications'])->name('updateNotifications');
+            Route::post('/change-password', [OPDProfileController::class, 'changePassword'])->name('change-password');
+            Route::put('/opd-profile', [OPDProfileController::class, 'updateOpdProfile'])->name('update-opd');
+            Route::put('/notifications', [OPDProfileController::class, 'updateNotifications'])->name('update-notifications');
             Route::get('/user-stats', [OPDProfileController::class, 'getUserStats'])->name('userStats');
             Route::get('/opd-stats', [OPDProfileController::class, 'getOpdStats'])->name('opdStats');
         });
@@ -71,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [OPDMasterController::class, 'index'])->name('index');
             
             // CRUD Lokasi
-            Route::post('/location', [OPDMasterController::class, 'locationStore'])->name('locationStore');
+            Route::post('/location', [OPDMasterController::class, 'locationStore'])->name('location-store');
             Route::put('/location/{location}', [OPDMasterController::class, 'locationUpdate'])->name('locationUpdate');
             Route::delete('/location/{location}', [OPDMasterController::class, 'locationDestroy'])->name('locationDestroy');
             
@@ -91,7 +91,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/create', [OPDTransactionController::class, 'create'])->name('create');
             
             // Store Routes by Type
-            Route::post('/deletions', [OPDTransactionController::class, 'storeDeletion'])->name('deletions.store');
+            Route::post('/deletions', [OPDTransactionController::class, 'storeDeletion'])->name('store-deletion');
             Route::post('/mutations', [OPDTransactionController::class, 'storeMutation'])->name('storeMutation');
             Route::post('/maintenances', [OPDTransactionController::class, 'storeMaintenance'])->name('storeMaintenance');
             
