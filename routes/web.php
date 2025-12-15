@@ -92,8 +92,8 @@ Route::middleware(['auth'])->group(function () {
             
             // Store Routes by Type
             Route::post('/deletions', [OPDTransactionController::class, 'storeDeletion'])->name('store-deletion');
-            Route::post('/mutations', [OPDTransactionController::class, 'storeMutation'])->name('storeMutation');
-            Route::post('/maintenances', [OPDTransactionController::class, 'storeMaintenance'])->name('storeMaintenance');
+            Route::post('/mutations', [OPDTransactionController::class, 'storeMutation'])->name('store-mutation');
+            Route::post('/maintenances', [OPDTransactionController::class, 'storeMaintenance'])->name('store-maintenance');
             
             // Show/Cancel by Type
             Route::get('/{type}/{id}', [OPDTransactionController::class, 'show'])->where('type', 'deletion|mutation|maintenance')->name('show');

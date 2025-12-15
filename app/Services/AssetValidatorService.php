@@ -14,19 +14,18 @@ class AssetValidatorService
      */
     public function validateAssetData(array $data): void
     {
-        // Validate status values
         if (isset($data['status']) && !in_array($data['status'], Asset::STATUSES)) {
             throw new \InvalidArgumentException("Invalid status value. Must be one of: " . implode(', ', Asset::STATUSES));
         }
-
+        
         if (isset($data['condition']) && !in_array($data['condition'], Asset::CONDITIONS)) {
             throw new \InvalidArgumentException("Invalid condition value. Must be one of: " . implode(', ', Asset::CONDITIONS));
         }
-
+        
         if (isset($data['document_verification_status']) && !in_array($data['document_verification_status'], Asset::DOCUMENT_VERIFICATION_STATUSES)) {
             throw new \InvalidArgumentException("Invalid document verification status. Must be one of: " . implode(', ', Asset::DOCUMENT_VERIFICATION_STATUSES));
         }
-
+        
         if (isset($data['validation_status']) && !in_array($data['validation_status'], Asset::VALIDATION_STATUSES)) {
             throw new \InvalidArgumentException("Invalid validation status. Must be one of: " . implode(', ', Asset::VALIDATION_STATUSES));
         }

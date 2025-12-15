@@ -12,6 +12,7 @@ use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class OpdAssetController extends Controller
 {
@@ -79,38 +80,74 @@ class OpdAssetController extends Controller
     }
 
     /**
-     * Store a newly created asset
+     * Store a newly created asset - VERSI DIPERBAIKI
      */
     public function store(Request $request)
     {
-        $request->validate(Asset::rules());
+        Log::info('=== STORE ASSET START ===');
+        Log::info('User Info:', [
+            'id' => Auth::id(),
+            'opd_unit_id' => Auth::user()->opd_unit_id
+        ]);
+        
+        // Validasi tanpa field yang akan di-set otomatis
+        $customRules = Asset::rules();
+        
+        // Hapus validasi untuk field yang akan di-set otomatis
+        unset($customRules['status']);
+        unset($customRules['document_verification_status']);
+        unset($customRules['validation_status']);
+        unset($customRules['opd_unit_id']);
+        unset($customRules['created_by']);
+        
+        Log::info('Custom validation rules:', $customRules);
+        Log::info('Request data:', $request->all());
         
         try {
-            $data = $request->all();
-            $data['opd_unit_id'] = auth()->user()->opd_unit_id;
-            $data['created_by'] = auth()->id();
+            $request->validate($customRules);
+            Log::info('Validation passed');
+            
+            // Hanya ambil field yang diperlukan dari request
+            $data = $request->only([
+                'name', 'category_id', 'sub_category_code', 
+                'location_id', 'value', 'acquisition_year',
+                'condition', 'kib_data', 'asset_code'
+            ]);
+            
+            Log::info('Data after only():', $data);
+            
+            // Set field yang otomatis
+            $data['opd_unit_id'] = Auth::user()->opd_unit_id;
+            $data['created_by'] = Auth::id();
             $data['document_verification_status'] = 'belum_diverifikasi';
             $data['validation_status'] = 'belum_divalidasi';
             $data['status'] = 'aktif';
             
-            // Auto-generate asset code if not provided
-            if (empty($data['asset_code'])) {
-                $category = Category::find($data['category_id']);
-                if ($category) {
-                    $opdUnit = auth()->user()->opdUnit;
-                    $data['asset_code'] = $this->codeService->generateAssetCode(
-                        $category->kib_code,
-                        $data['sub_category_code'],
-                        $data['acquisition_year'] ?? date('Y'),
-                        $opdUnit->kode_opd_numeric
-                    );
+            Log::info('Data after setting defaults:', $data);
+            
+            // Handle KIB data dari form
+            if ($request->has('kib_data')) {
+                $kibData = [];
+                foreach ($request->input('kib_data') as $key => $value) {
+                    if (!empty($value)) {
+                        $kibData[$key] = $value;
+                    }
                 }
+                $data['kib_data'] = !empty($kibData) ? $kibData : null;
+                Log::info('KIB Data processed:', $data['kib_data'] ?? []);
             }
             
-            $asset = $this->assetService->createAsset($data, auth()->id());
+            // Biarkan service yang generate asset code
+            $asset = $this->assetService->createAsset($data, Auth::id());
+            
+            Log::info('Asset created successfully:', [
+                'id' => $asset->asset_id,
+                'code' => $asset->asset_code
+            ]);
             
             // Handle file uploads
             if ($request->hasFile('documents')) {
+                Log::info('Processing document uploads...');
                 foreach ($request->file('documents') as $file) {
                     $path = $file->store('asset-documents', 'public');
                     
@@ -119,16 +156,25 @@ class OpdAssetController extends Controller
                         'file_path' => $path,
                         'file_type' => $file->getClientOriginalExtension(),
                         'document_type' => $request->input('document_type', 'pengadaan'),
-                        'uploaded_by' => auth()->id(),
+                        'uploaded_by' => Auth::id(),
                     ]);
+                    
+                    Log::info('Document uploaded:', ['path' => $path]);
                 }
             }
+            
+            Log::info('=== STORE ASSET SUCCESS ===');
             
             return redirect()
                 ->route('opd.assets.show', $asset)
                 ->with('success', 'Aset berhasil ditambahkan.');
                 
         } catch (\Exception $e) {
+            Log::error('=== STORE ASSET ERROR ===');
+            Log::error('Error message: ' . $e->getMessage());
+            Log::error('Error trace: ' . $e->getTraceAsString());
+            Log::error('Request data on error:', $request->all());
+            
             return redirect()
                 ->back()
                 ->withInput()
@@ -142,34 +188,31 @@ class OpdAssetController extends Controller
     public function show(Asset $asset, Request $request)
     {
         $this->authorize('view', $asset);
-
         $tab = $request->get('tab', 'overview');
-
         $asset->load([
             'category', 'location', 'creator',
             'documents.uploader', 'histories.changer',
             'maintenances', 'depreciations', 'mutations', 'deletions'
         ]);
-
+        
         // Tambahkan lokasi untuk dropdown pindah lokasi
         $opdUnitId = auth()->user()->opd_unit_id;
         $locations = Location::where('opd_unit_id', $opdUnitId)->get();
-
         $additionalData = [];
-
+        
         if ($tab === 'documents') {
             $additionalData['documentTypes'] = [
                 'pengadaan', 'mutasi', 'penghapusan',
                 'pemeliharaan', 'lainnya'
             ];
         }
-
+        
         return view('opd.assets.show', [
             'title' => 'Detail Aset: ' . $asset->name,
             'asset' => $asset,
             'tab' => $tab,
             'additionalData' => $additionalData,
-            'locations' => $locations, // FIX
+            'locations' => $locations,
         ]);
     }
 
@@ -202,7 +245,7 @@ class OpdAssetController extends Controller
     }
 
     /**
-     * Update asset
+     * Update asset - VERSI DIPERBAIKI
      */
     public function update(Request $request, Asset $asset)
     {
@@ -215,16 +258,46 @@ class OpdAssetController extends Controller
                 ->with('error', 'Aset yang sudah diverifikasi/divalidasi tidak dapat diedit');
         }
         
-        $request->validate(Asset::rules($asset->asset_id));
+        // Validasi tanpa field yang akan di-set otomatis
+        $customRules = Asset::rules($asset->asset_id);
+        
+        // Hapus validasi untuk field yang akan di-set otomatis
+        unset($customRules['status']);
+        unset($customRules['document_verification_status']);
+        unset($customRules['validation_status']);
+        unset($customRules['opd_unit_id']);
+        unset($customRules['created_by']);
+        
+        $request->validate($customRules);
         
         try {
-            $this->assetService->updateAsset($asset, $request->all());
+            // Hanya ambil field yang boleh di-update
+            $data = $request->only([
+                'name', 'category_id', 'sub_category_code', 
+                'location_id', 'value', 'acquisition_year',
+                'condition', 'kib_data'
+            ]);
+            
+            // Handle KIB data
+            if ($request->has('kib_data')) {
+                $kibData = [];
+                foreach ($request->input('kib_data') as $key => $value) {
+                    if (!empty($value)) {
+                        $kibData[$key] = $value;
+                    }
+                }
+                $data['kib_data'] = !empty($kibData) ? $kibData : null;
+            }
+            
+            $this->assetService->updateAsset($asset, $data);
             
             return redirect()
                 ->route('opd.assets.show', $asset)
                 ->with('success', 'Data aset berhasil diperbarui');
                 
         } catch (\Exception $e) {
+            Log::error('Error updating asset: ' . $e->getMessage());
+            
             return redirect()
                 ->back()
                 ->withInput()
@@ -457,5 +530,53 @@ class OpdAssetController extends Controller
             'message' => 'Export feature will be implemented',
             'count' => $assets->count(),
         ]);
+    }
+    
+    /**
+     * TEST METHOD: Untuk debugging saja
+     */
+    public function storeTest(Request $request)
+    {
+        try {
+            Log::info('=== STORE TEST START ===');
+            
+            // Test langsung tanpa validation
+            $asset = Asset::create([
+                'name' => $request->name ?: 'Test Asset ' . time(),
+                'category_id' => $request->category_id ?: 1,
+                'sub_category_code' => $request->sub_category_code ?: '01',
+                'value' => $request->value ?: 1000000,
+                'acquisition_year' => $request->acquisition_year ?: 2024,
+                'status' => 'aktif',
+                'condition' => $request->condition ?: 'Baik',
+                'document_verification_status' => 'belum_diverifikasi',
+                'validation_status' => 'belum_divalidasi',
+                'opd_unit_id' => Auth::user()->opd_unit_id,
+                'created_by' => Auth::id(),
+                'asset_code' => 'TEST-' . time()
+            ]);
+            
+            Log::info('Test asset created:', ['id' => $asset->asset_id]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Test asset created successfully',
+                'asset' => [
+                    'id' => $asset->asset_id,
+                    'name' => $asset->name,
+                    'code' => $asset->asset_code
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Test error: ' . $e->getMessage());
+            Log::error('Trace: ' . $e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
     }
 }
