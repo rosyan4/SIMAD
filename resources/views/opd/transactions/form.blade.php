@@ -12,7 +12,7 @@
             <div class="card-body">
                 @if($type == 'deletion')
                     <!-- Deletion Form -->
-                    <form method="POST" action="{{ route('opd.transactions.store-deletion') }}">
+                    <form method="POST" action="{{ route('opd.transactions.storeDeletion') }}">
                         @csrf
                         
                         <div class="mb-4">
@@ -79,7 +79,7 @@
                     
                 @elseif($type == 'mutation')
                     <!-- Mutation Form -->
-                    <form method="POST" action="{{ route('opd.transactions.store-mutation') }}">
+                    <form method="POST" action="{{ route('opd.transactions.storeMutation') }}">
                         @csrf
                         
                         <div class="mb-4">
@@ -159,7 +159,7 @@
                     
                 @elseif($type == 'maintenance')
                     <!-- Maintenance Form -->
-                    <form method="POST" action="{{ route('opd.transactions.store-maintenance') }}">
+                    <form method="POST" action="{{ route('opd.transactions.storeMaintenance') }}">
                         @csrf
                         
                         <div class="mb-4">

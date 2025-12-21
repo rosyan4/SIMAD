@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Opd\OPDDashboardController;
-use App\Http\Controllers\Opd\OPDProfileController;
-use App\Http\Controllers\Opd\OPDAssetController;
-use App\Http\Controllers\Opd\OPDMasterController;
-use App\Http\Controllers\Opd\OPDTransactionController;
+use App\Http\Controllers\Opd\OpdDashboardController;
+use App\Http\Controllers\Opd\OpdProfileController;
+use App\Http\Controllers\Opd\OpdAssetController;
+use App\Http\Controllers\Opd\OpdMasterController;
+use App\Http\Controllers\Opd\OpdTransactionController;
 // ==================== AUTHENTICATION ====================
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
@@ -29,82 +29,81 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('opd')->name('opd.')->middleware(['auth', 'admin.opd'])->group(function () {
 
         // Dashboard
-        Route::get('/dashboard', [OPDDashboardController::class, 'index'])->name('dashboard.index');
-        Route::get('/dashboard/chart-data', [OPDDashboardController::class, 'chartData'])->name('dashboard.chartData');
-        Route::get('/dashboard/maintenance-stats', [OPDDashboardController::class, 'maintenanceStats'])->name('dashboard.maintenance-stats');
+        Route::controller(OpdDashboardController::class)->prefix('dashboard')->name('dashboard.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/chart-data', 'chartData')->name('chartData');
+            Route::get('/maintenance-stats', 'maintenanceStats')->name('maintenanceStats');
+        });
         
         // Profile Management
-        Route::prefix('profile')->name('profile.')->group(function () {
-            Route::get('/', [OPDProfileController::class, 'index'])->name('index');
-            Route::put('/', [OPDProfileController::class, 'update'])->name('update');
-            Route::post('/change-password', [OPDProfileController::class, 'changePassword'])->name('change-password');
-            Route::put('/opd-profile', [OPDProfileController::class, 'updateOpdProfile'])->name('update-opd');
-            Route::put('/notifications', [OPDProfileController::class, 'updateNotifications'])->name('update-notifications');
-            Route::get('/user-stats', [OPDProfileController::class, 'getUserStats'])->name('userStats');
-            Route::get('/opd-stats', [OPDProfileController::class, 'getOpdStats'])->name('opdStats');
+        Route::controller(OpdProfileController::class)->prefix('profile')->name('profile.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::put('/', 'update')->name('update');
+            Route::post('/change-password', 'changePassword')->name('changePassword');
+            Route::put('/opd-profile', 'updateOpdProfile')->name('updateOpdProfile');
+            Route::put('/notifications', 'updateNotifications')->name('updateNotifications');
+            Route::get('/user-stats', 'getUserStats')->name('userStats');
+            Route::get('/opd-stats', 'getOpdStats')->name('opdStats');
         });
         
         // Asset Management
-        Route::prefix('assets')->name('assets.')->group(function () {
-            Route::get('/', [OPDAssetController::class, 'index'])->name('index');
-            Route::get('/create', [OPDAssetController::class, 'create'])->name('create');
-            Route::post('/', [OPDAssetController::class, 'store'])->name('store');
-            Route::get('/{asset}', [OPDAssetController::class, 'show'])->name('show');
-            Route::get('/{asset}/edit', [OPDAssetController::class, 'edit'])->name('edit');
-            Route::put('/{asset}', [OPDAssetController::class, 'update'])->name('update');
-            Route::delete('/{asset}', [OPDAssetController::class, 'destroy'])->name('destroy');
+        Route::controller(OpdAssetController::class)->prefix('assets')->name('assets.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{asset}', 'show')->name('show');
+            Route::get('/{asset}/edit', 'edit')->name('edit');
+            Route::put('/{asset}', 'update')->name('update');
+            Route::delete('/{asset}', 'destroy')->name('destroy');
             
             // AJAX Routes
-            Route::post('/preview-code', [OPDAssetController::class, 'previewAssetCode'])->name('previewCode');
-            Route::put('/{asset}/update-field', [OPDAssetController::class, 'updateField'])->name('updateField');
-            Route::post('/{asset}/upload-document', [OPDAssetController::class, 'uploadDocument'])->name('uploadDocument');
-            Route::delete('/documents/{document}', [OPDAssetController::class, 'deleteDocument'])->name('deleteDocument');
-            Route::get('/stats', [OPDAssetController::class, 'getStats'])->name('stats');
-            Route::get('/export', [OPDAssetController::class, 'export'])->name('export');
-            Route::post('/bulk-action', [OpdAssetController::class, 'bulkAction'])->name('bulkAction');
+            Route::post('/preview-code', 'previewAssetCode')->name('previewAssetCode');
+            Route::put('/{asset}/update-field', 'updateField')->name('updateField');
+            Route::post('/{asset}/upload-document', 'uploadDocument')->name('uploadDocument');
+            Route::delete('/documents/{document}', 'deleteDocument')->name('deleteDocument');
+            Route::get('/stats', 'getStats')->name('stats');
+            Route::get('/export', 'export')->name('export');
         });
         
         // Master Data Management
-        Route::prefix('master')->name('master.')->group(function () {
-        
+        Route::controller(OpdMasterController::class)->prefix('master')->name('master.')->group(function () {
             // Halaman utama master data dengan sistem tab
-            Route::get('/', [OPDMasterController::class, 'index'])->name('index');
+            Route::get('/', 'index')->name('index');
             
             // CRUD Lokasi
-            Route::post('/location', [OPDMasterController::class, 'locationStore'])->name('location-store');
-            Route::put('/location/{location}', [OPDMasterController::class, 'locationUpdate'])->name('locationUpdate');
-            Route::delete('/location/{location}', [OPDMasterController::class, 'locationDestroy'])->name('locationDestroy');
+            Route::post('/location', 'locationStore')->name('locationStore');
+            Route::put('/location/{location}', 'locationUpdate')->name('locationUpdate');
+            Route::delete('/location/{location}', 'locationDestroy')->name('locationDestroy');
             
             // AJAX Endpoints untuk Lokasi
-            Route::get('/location/{location}', [OPDMasterController::class, 'getLocation'])->name('getLocation');
-            Route::get('/location-stats', [OPDMasterController::class, 'getLocationStats'])->name('getLocationStats');
-            Route::get('/search-locations', [OPDMasterController::class, 'searchLocations'])->name('location.search');
+            Route::get('/location/{location}', 'getLocation')->name('getLocation');
+            Route::get('/location-stats', 'getLocationStats')->name('locationStats');
+            Route::get('/search-locations', 'searchLocations')->name('searchLocations');
             
             // Pindahkan aset ke lokasi lain
-            Route::post('/move-asset/{asset}', [OPDMasterController::class, 'moveAsset'])->name('asset.move');
-            
+            Route::post('/move-asset/{asset}', 'moveAsset')->name('moveAsset');
         });
         
         // Transaction Management
-        Route::prefix('transactions')->name('transactions.')->group(function () {
-            Route::get('/', [OPDTransactionController::class, 'index'])->name('index');
-            Route::get('/create', [OPDTransactionController::class, 'create'])->name('create');
+        Route::controller(OpdTransactionController::class)->prefix('transactions')->name('transactions.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
             
             // Store Routes by Type
-            Route::post('/deletions', [OPDTransactionController::class, 'storeDeletion'])->name('store-deletion');
-            Route::post('/mutations', [OPDTransactionController::class, 'storeMutation'])->name('store-mutation');
-            Route::post('/maintenances', [OPDTransactionController::class, 'storeMaintenance'])->name('store-maintenance');
+            Route::post('/deletions', 'storeDeletion')->name('storeDeletion');
+            Route::post('/mutations', 'storeMutation')->name('storeMutation');
+            Route::post('/maintenances', 'storeMaintenance')->name('storeMaintenance');
             
             // Show/Cancel by Type
-            Route::get('/{type}/{id}', [OPDTransactionController::class, 'show'])->where('type', 'deletion|mutation|maintenance')->name('show');
-            Route::post('/{type}/{id}/cancel', [OPDTransactionController::class, 'cancel'])->where('type', 'deletion|mutation|maintenance')->name('cancel');
+            Route::get('/{type}/{id}', 'show')->where('type', 'deletion|mutation|maintenance')->name('show');
+            Route::post('/{type}/{id}/cancel', 'cancel')->where('type', 'deletion|mutation|maintenance')->name('cancel');
             
             // Maintenance specific
-            Route::put('/maintenances/{maintenance}/status', [OPDTransactionController::class, 'updateMaintenanceStatus'])->name('maintenances.update-status');
+            Route::put('/maintenances/{maintenance}/status', 'updateMaintenanceStatus')->name('updateMaintenanceStatus');
             
             // AJAX Routes
-            Route::post('/mutations/{mutation}/accept', [OPDTransactionController::class, 'acceptMutation'])->name('mutations.accept');
-            Route::get('/statistics', [OPDTransactionController::class, 'getStatistics'])->name('statistics');
+            Route::post('/mutations/{mutation}/accept', 'acceptMutation')->name('acceptMutation');
+            Route::get('/statistics', 'getStatistics')->name('statistics');
         });
     });
 });

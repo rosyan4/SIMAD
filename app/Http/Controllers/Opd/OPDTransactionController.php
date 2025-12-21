@@ -457,13 +457,12 @@ class OPDTransactionController extends Controller
                 'message' => 'Mutasi ini tidak ditujukan ke OPD Anda',
             ], 403);
         }
-
-        // DIKOREKSI: OPD tujuan menerima proposal yang masih 'diusulkan'
-        // bukan yang sudah 'disetujui' oleh admin utama
-        if ($mutation->status !== 'diusulkan') {
+        
+        // OPD tujuan hanya dapat menerima mutasi yang sudah disetujui admin utama
+        if ($mutation->status !== 'disetujui') {
             return response()->json([
                 'success' => false,
-                'message' => 'Hanya mutasi yang masih diusulkan yang dapat diterima',
+                'message' => 'Hanya mutasi yang sudah disetujui admin utama yang dapat diterima',
             ], 400);
         }
 
@@ -474,7 +473,6 @@ class OPDTransactionController extends Controller
                 : Location::where('opd_unit_id', auth()->user()->opd_unit_id)
                     ->where('type', 'gedung')
                     ->first();
-
             if (!$targetLocation) {
                 return response()->json([
                     'success' => false,
@@ -482,20 +480,20 @@ class OPDTransactionController extends Controller
                 ], 400);
             }
 
-            // First, update the mutation status to 'disetujui' (approved by OPD tujuan)
+            // Update the mutation with target location
             $mutation->update([
-                'status' => 'disetujui',
                 'to_location_id' => $targetLocation->location_id,
                 'notes' => $mutation->notes . "\n[Diterima] Aset diterima oleh OPD tujuan.",
             ]);
 
-            // Then complete the mutation
+            // Complete the mutation
             $this->mutationService->completeMutation($mutation->mutation_id);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Mutasi berhasil diterima. Aset sekarang menjadi milik OPD Anda.',
             ]);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -512,15 +510,12 @@ class OPDTransactionController extends Controller
         $type = $request->get('type', 'all');
         $opdUnitId = auth()->user()->opd_unit_id;
         $stats = [];
-
         if ($type === 'all' || $type === 'deletions') {
             $stats['deletions'] = $this->deletionService->getStatistics($opdUnitId);
         }
-
         if ($type === 'all' || $type === 'mutations') {
             $stats['mutations'] = $this->mutationService->getStatistics($opdUnitId);
         }
-
         if ($type === 'all' || $type === 'maintenances') {
             $stats['maintenances'] = [
                 'total' => Maintenance::whereHas('asset', function ($q) use ($opdUnitId) {
@@ -537,7 +532,6 @@ class OPDTransactionController extends Controller
                 })->where('status', 'selesai')->sum('cost'),
             ];
         }
-
         return response()->json([
             'success' => true,
             'stats' => $stats,

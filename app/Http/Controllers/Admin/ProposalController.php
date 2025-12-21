@@ -146,6 +146,7 @@ class ProposalController extends Controller
             return redirect()
                 ->route('admin.proposals.show', ['type' => $type, 'id' => $id])
                 ->with('success', 'Proposal berhasil disetujui');
+                
         } catch (\Exception $e) {
             return redirect()
                 ->route('admin.proposals.show', ['type' => $type, 'id' => $id])

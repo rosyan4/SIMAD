@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Location;
 use App\Models\Category;
 use App\Models\Asset;
+use App\Models\AssetHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -220,11 +221,14 @@ class OPDMasterController extends Controller
             $oldLocation = $asset->location;
             $asset->update(['location_id' => $request->location_id]);
             
-            $asset->createHistoryRecord(
-                'update',
-                "Aset dipindahkan dari lokasi " . ($oldLocation->name ?? 'Tidak ada') .
-                " ke {$location->name}. Alasan: {$request->move_reason}"
-            );
+            AssetHistory::create([
+                'asset_id' => $asset->asset_id,
+                'action' => 'update',
+                'description' => "Aset dipindahkan dari lokasi " . ($oldLocation->name ?? 'Tidak ada') .
+                    " ke {$location->name}. Alasan: {$request->move_reason}",
+                'change_by' => auth()->id(),
+                'ip_address' => request()->ip(),
+            ]);
             
             if ($request->ajax()) {
                 return response()->json([

@@ -664,7 +664,7 @@
                 <h5 class="modal-title">Update Status Pemeliharaan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="{{ route('opd.transactions.update-maintenance-status', $data->maintenance_id) }}">
+            <form method="POST" action="{{ route('opd.transactions.maintenances.update-status', $data->mutation_id) }}">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">

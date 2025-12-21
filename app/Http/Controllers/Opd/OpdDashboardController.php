@@ -42,23 +42,9 @@ class OPDDashboardController extends Controller
                 break;
                 
             case 'statistics':
-                $assets = Asset::where('opd_unit_id', $opdUnitId)->get();
-                $data['statistics'] = [
-                    'total_assets' => $assets->count(),
-                    'total_value' => $assets->sum('value'),
-                    'active_assets' => $assets->where('status', 'aktif')->count(),
-                    'under_maintenance' => $assets->where('status', 'dalam_perbaikan')->count(),
-                    'mutated_assets' => $assets->where('status', 'dimutasi')->count(),
-                    'deleted_assets' => $assets->where('status', 'dihapus')->count(),
-                ];
-                
-                $data['conditionDistribution'] = [
-                    'Baik' => $assets->where('condition', 'Baik')->count(),
-                    'Rusak Ringan' => $assets->where('condition', 'Rusak Ringan')->count(),
-                    'Rusak Berat' => $assets->where('condition', 'Rusak Berat')->count(),
-                ];
-                
-                $data['statusDistribution'] = $assets->groupBy('status')->map->count();
+                $data['statistics'] = $dashboardData['asset_statistics'];
+                $data['conditionDistribution'] = $dashboardData['asset_statistics']['condition_distribution'] ?? [];
+                $data['statusDistribution'] = $dashboardData['asset_statistics']['status_distribution'] ?? [];
                 break;
                 
             case 'maintenance':
@@ -77,18 +63,7 @@ class OPDDashboardController extends Controller
                 break;
                 
             case 'activities':
-                $data['activities'] = DB::table('asset_histories')
-                    ->join('assets', 'asset_histories.asset_id', '=', 'assets.asset_id')
-                    ->join('users', 'asset_histories.change_by', '=', 'users.user_id')
-                    ->select([
-                        'asset_histories.*',
-                        'assets.name as asset_name',
-                        'assets.asset_code',
-                        'users.name as user_name',
-                    ])
-                    ->where('assets.opd_unit_id', $opdUnitId)
-                    ->orderBy('asset_histories.change_date', 'desc')
-                    ->paginate(15);
+                $data['activities'] = $dashboardData['recent_activities'];
                 break;
                 
             case 'quick-actions':
@@ -154,7 +129,7 @@ class OPDDashboardController extends Controller
                     'total_value' => (float) $item->total_value,
                 ];
             });
-
+        
         return response()->json([
             'success' => true,
             'trendData' => $trendData,

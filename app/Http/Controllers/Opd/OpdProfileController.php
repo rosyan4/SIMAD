@@ -30,12 +30,10 @@ class OPDProfileController extends Controller
         $user->load('opdUnit');
         $tab = $request->get('tab', 'profile');
         $data = [];
-
         switch ($tab) {
             case 'profile':
                 // Data user sudah tersedia
                 break;
-
             case 'activities':
                 $data['activities'] = DB::table('asset_histories')
                     ->join('assets', 'asset_histories.asset_id', '=', 'assets.asset_id')
@@ -50,25 +48,20 @@ class OPDProfileController extends Controller
                     ->orderBy('asset_histories.change_date', 'desc')
                     ->paginate(15, ['*'], 'activities_page');
                 break;
-
             case 'statistics':
                 $data['userStats'] = $this->getUserStatistics($user);
                 $data['opdStats'] = $this->getOpdStatistics($user->opd_unit_id);
                 break;
-
             case 'opd':
                 $data['opdUnit'] = $user->opdUnit;
                 break;
-
             case 'notifications':
-                // MODIFIKASI: Gunakan session atau default jika kolom tidak ada
-                $data['notificationPreferences'] = [
+                $data['notificationPreferences'] = $user->notification_preferences ?? [
                     'email' => true,
                     'push' => true,
                     'types' => ['important', 'maintenance', 'deletion', 'mutation']
                 ];
                 break;
-
             case 'security':
                 // Tab untuk ganti password
                 break;
@@ -88,7 +81,6 @@ class OPDProfileController extends Controller
     public function update(Request $request)
     {
         $user = auth()->user();
-
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->user_id . ',user_id',
@@ -111,6 +103,7 @@ class OPDProfileController extends Controller
             return redirect()
                 ->route('opd.profile', ['tab' => 'profile'])
                 ->with('success', 'Profil berhasil diperbarui');
+
         } catch (\Exception $e) {
             if ($request->ajax()) {
                 return response()->json([
@@ -166,6 +159,7 @@ class OPDProfileController extends Controller
             return redirect()
                 ->route('opd.profile', ['tab' => 'security'])
                 ->with('success', 'Password berhasil diubah');
+
         } catch (\Exception $e) {
             if ($request->ajax()) {
                 return response()->json([
@@ -186,7 +180,6 @@ class OPDProfileController extends Controller
     public function updateOpdProfile(Request $request)
     {
         $opdUnit = auth()->user()->opdUnit;
-
         $request->validate([
             'nama_opd' => 'required|string|max:255',
             'alamat' => 'nullable|string',
@@ -208,6 +201,7 @@ class OPDProfileController extends Controller
             return redirect()
                 ->route('opd.profile', ['tab' => 'opd'])
                 ->with('success', 'Profil OPD berhasil diperbarui');
+
         } catch (\Exception $e) {
             if ($request->ajax()) {
                 return response()->json([
@@ -224,12 +218,11 @@ class OPDProfileController extends Controller
     }
 
     /**
-     * Update notification settings (AJAX compatible) - MODIFIKASI
+     * Update notification settings (AJAX compatible)
      */
     public function updateNotifications(Request $request)
     {
         $user = auth()->user();
-
         $request->validate([
             'email_notifications' => 'boolean',
             'push_notifications' => 'boolean',
@@ -244,14 +237,15 @@ class OPDProfileController extends Controller
                 'types' => $request->notification_types ?? ['important', 'maintenance', 'deletion'],
             ];
 
-            // MODIFIKASI: Simpan di session karena kolom tidak ada di database
-            // Atau bisa buat migration untuk menambahkan kolom notification_preferences
-            session(['user_notification_preferences' => $preferences]);
-            
-            // Atau jika ingin menggunakan database, tambahkan kolom notification_preferences JSON di tabel users
-            // $user->update([
-            //     'notification_preferences' => $preferences,
-            // ]);
+            // Simpan preferences ke database jika kolom ada
+            if (Schema::hasColumn('users', 'notification_preferences')) {
+                $user->update([
+                    'notification_preferences' => $preferences,
+                ]);
+            } else {
+                // Simpan di session sementara
+                session(['user_notification_preferences' => $preferences]);
+            }
 
             if ($request->ajax()) {
                 return response()->json([
@@ -264,6 +258,7 @@ class OPDProfileController extends Controller
             return redirect()
                 ->route('opd.profile', ['tab' => 'notifications'])
                 ->with('success', 'Pengaturan notifikasi berhasil diperbarui');
+
         } catch (\Exception $e) {
             if ($request->ajax()) {
                 return response()->json([
@@ -320,7 +315,7 @@ class OPDProfileController extends Controller
             'total_documents_uploaded' => DB::table('documents')
                 ->where('uploaded_by', $user->user_id)
                 ->count(),
-            'last_login' => $user->last_login ? 
+            'last_login' => $user->last_login ?
                 $user->last_login->format('d-m-Y H:i') : 'Belum pernah',
             'account_created' => $user->created_at->format('d-m-Y'),
             'account_age' => now()->diffInDays($user->created_at) . ' hari',

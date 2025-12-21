@@ -1169,25 +1169,6 @@
                         </a>
                     </li>
                 </ul>
-                
-                <!-- Quick Stats -->
-                <div class="sidebar-section">
-                    <h6><i class="fas fa-chart-pie"></i> Ringkasan</h6>
-                    <div class="stats-widget">
-                        <div class="stat-row">
-                            <span class="stat-label">Total Aset</span>
-                            <span class="stat-value" id="sidebar-asset-count">-</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Aktif</span>
-                            <span class="stat-value" id="sidebar-active-count">-</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Nilai Total</span>
-                            <span class="stat-value" id="sidebar-total-value">-</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 

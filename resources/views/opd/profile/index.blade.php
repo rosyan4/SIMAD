@@ -207,7 +207,7 @@
                 @elseif($tab == 'opd')
                     <!-- OPD Profile Tab -->
                     <h5 class="card-title">Profil OPD</h5>
-                    <form method="POST" action="{{ route('opd.profile.update-opd') }}">
+                    <form method="POST" action="{{ route('opd.profile.updateOpdProfile') }}">
                         @csrf
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -238,7 +238,7 @@
                 @elseif($tab == 'notifications')
                     <!-- Notifications Tab -->
                     <h5 class="card-title">Pengaturan Notifikasi</h5>
-                    <form method="POST" action="{{ route('opd.profile.update-notifications') }}">
+                    <form method="POST" action="{{ route('opd.profile.updateNotifications') }}">
                         @csrf
                         <div class="mb-3">
                             <div class="form-check form-switch">
@@ -288,7 +288,7 @@
                 @elseif($tab == 'security')
                     <!-- Security Tab -->
                     <h5 class="card-title">Ubah Password</h5>
-                    <form method="POST" action="{{ route('opd.profile.change-password') }}">
+                    <form method="POST" action="{{ route('opd.profile.changePassword') }}">
                         @csrf
                         <div class="row g-3">
                             <div class="col-md-6">

@@ -402,7 +402,7 @@ $(document).ready(function() {
         if (kibCode && subCategoryCode && acquisitionYear) {
             // AJAX request untuk preview kode
             $.ajax({
-                url: "{{ route('opd.assets.previewCode') }}",
+                url: "{{ route('opd.assets.previewAssetCode') }}",
                 method: 'POST',
                 data: {
                     _token: "{{ csrf_token() }}",
